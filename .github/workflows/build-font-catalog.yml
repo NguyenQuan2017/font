@@ -1,0 +1,57 @@
+name: Build Font Catalog Pack
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: font-catalog-pack-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - name: Install preview rendering system font
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y fonts-dejavu-core
+
+      - name: Install Python dependencies
+        run: python -m pip install --upgrade pip && python -m pip install -r requirements.txt
+
+      - name: Build, render, and validate catalog
+        run: python scripts/build_catalog.py --output dist
+
+      - name: Publish build summary
+        if: success()
+        run: |
+          echo "## Font Catalog Pack" >> "$GITHUB_STEP_SUMMARY"
+          echo "- Fonts: 72" >> "$GITHUB_STEP_SUMMARY"
+          echo "- Categories: 12 (6 fonts each)" >> "$GITHUB_STEP_SUMMARY"
+          echo "- Preview images: 72, rendered from the corresponding Google Fonts binary" >> "$GITHUB_STEP_SUMMARY"
+          echo "- Manifest: validated against the project import schema" >> "$GITHUB_STEP_SUMMARY"
+          echo "- Archive: dist/Font_Catalog_Pack.zip" >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Upload ZIP artifact
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: Font_Catalog_Pack
+          path: dist/Font_Catalog_Pack.zip
+          if-no-files-found: error
+          retention-days: 14
