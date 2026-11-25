@@ -113,7 +113,7 @@ def render_preview(font_path: Path, family: str, category: str, out_path: Path) 
     out_path.parent.mkdir(parents=True, exist_ok=True)
     image.save(out_path, format="PNG", optimize=True)
 
-def build_one(item: tuple[str, str], work_dir: Path) -> dict[str, Any]:
+def build_one(item: tuple[str, str], work_dir: Path, pack_dir: Path) -> dict[str, Any]:
     category, family = item
     slug, license_id, filename = fetch_metadata(family)
     metadata_url = f"https://github.com/google/fonts/blob/main/ofl/{slug}/METADATA.pb"
@@ -126,7 +126,7 @@ def build_one(item: tuple[str, str], work_dir: Path) -> dict[str, Any]:
         raise RuntimeError(f"{family}: invalid font file size {font_path.stat().st_size}")
     validate_font_file(font_path, family)
     preview_rel = f"previews/{slug}.png"
-    preview_path = work_dir / "Font_Catalog_Pack" / preview_rel
+    preview_path = pack_dir / preview_rel
     render_preview(font_path, family, category, preview_path)
     if preview_path.stat().st_size > 10 * 1024 * 1024:
         raise RuntimeError(f"{family}: preview exceeds 10 MB")
@@ -205,7 +205,7 @@ def main() -> int:
     items = [(cat, family) for cat, families in CATEGORIES for family in families]
     errors, records = [], []
     with ThreadPoolExecutor(max_workers=8) as pool:
-        futures = {pool.submit(build_one, item, work_dir): item for item in items}
+        futures = {pool.submit(build_one, item, work_dir, pack_dir): item for item in items}
         for future in as_completed(futures):
             item = futures[future]
             try:
