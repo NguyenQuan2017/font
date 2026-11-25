@@ -27,7 +27,8 @@ CATEGORIES = [
     ("decorative", ["Lobster", "Righteous", "Fredoka", "Bungee Shade", "Bowlby One SC", "Yeseva One"]),
 ]
 ALLOWED_LICENSES = {"OFL", "APACHE2", "UFL"}
-CATALOG_INDEX = {(cat, family): i for i, (cat, fams) in enumerate(CATEGORIES) for family in fams}
+CATALOG_ITEMS = [(cat, family) for cat, families in CATEGORIES for family in families]
+CATALOG_INDEX = {item: index for index, item in enumerate(CATALOG_ITEMS)}
 
 def slugify(value: str) -> str:
     return re.sub(r"[^a-z0-9]", "", value.lower())
