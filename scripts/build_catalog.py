@@ -23,7 +23,7 @@ CATEGORIES = [
     ("monospace", ["Roboto Mono", "Space Mono", "Source Code Pro", "IBM Plex Mono", "Inconsolata", "Fira Code"]),
     ("blackletter", ["UnifrakturCook", "UnifrakturMaguntia", "Pirata One", "Germania One", "Grenze Gotisch", "MedievalSharp"]),
     ("stencil", ["Stardos Stencil", "Saira Stencil One", "Allerta Stencil", "Graduate", "Big Shoulders Stencil Display", "Black Ops One"]),
-    ("rounded", ["Nunito", "Quicksand", "Varela Round", "Comfortaa", "Baloo 2", "M PLUS Rounded 1c"]),
+    ("rounded", ["Nunito", "Quicksand", "Varela Round", "Comfortaa", "Baloo 2", "Dosis"]),
     ("decorative", ["Lobster", "Righteous", "Fredoka", "Bungee Shade", "Bowlby One SC", "Yeseva One"]),
 ]
 ALLOWED_LICENSES = {"OFL", "APACHE2", "UFL"}
